@@ -19,6 +19,8 @@ public abstract class ConstantInter extends JsonMapper
 	public static final String FIELD_MESSAGE_ADAPTOR_ID = "adaptorId";
 	public static final String FIELD_MESSAGE_PROXY_ID = "proxyId";
 	public static final String FIELD_MESSAGE_DATA = "data";
+	public static final String MESSAGE_PING = "Ping";
+	public static final String MESSAGE_PONG = "Pong";
     /**
      * 编码规则，0x10000001,第1位表示系统，第2，3位表示子系统,第4,5,6位表示模块，第7,8位表示功能
      * 此消息定义为全局消息定义，后面有新消息接入也必须遵循此编码规则追加
