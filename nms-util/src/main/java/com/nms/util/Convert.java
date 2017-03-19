@@ -7,6 +7,12 @@ import com.fasterxml.jackson.dataformat.protobuf.ProtobufFactory;
 import com.fasterxml.jackson.dataformat.protobuf.schema.ProtobufSchema;
 import com.fasterxml.jackson.dataformat.protobuf.schemagen.ProtobufSchemaGenerator;
 
+import com.nms.common.GlobalConstant;
+import ma.glasnost.orika.MapperFacade;
+import ma.glasnost.orika.MapperFactory;
+import ma.glasnost.orika.impl.DefaultMapperFactory;
+import ma.glasnost.orika.metadata.Type;
+import ma.glasnost.orika.metadata.TypeFactory;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.beanutils.converters.DateConverter;
 import org.apache.commons.codec.DecoderException;
@@ -33,19 +39,26 @@ import java.util.concurrent.ConcurrentMap;
  */
 public final class Convert extends JsonMapper {
 
-    protected final static Logger logger = LoggerFactory.getLogger(Convert.class);
+    private final static Logger logger = LoggerFactory.getLogger(Convert.class);
 
     private static final char[] BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
             .toCharArray();
     
     private final static ConcurrentMap<Class, JAXBContext> jaxbContexts = new ConcurrentHashMap<Class, JAXBContext>();
 
-    protected final static ObjectMapper protobufMapper = new ObjectMapper(new ProtobufFactory());
+    private final static ObjectMapper protobufMapper = new ObjectMapper(new ProtobufFactory());
 
-    protected final static ConcurrentMap<Class<?>,ProtobufSchema> schemas = new ConcurrentHashMap<Class<?>,ProtobufSchema>();
+    private final static ConcurrentMap<Class<?>,ProtobufSchema> schemas = new ConcurrentHashMap<Class<?>,ProtobufSchema>();
+
+    private static MapperFacade beanMapper;
 
     static {
+
+        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+        beanMapper = mapperFactory.getMapperFacade();
+
         registerDateConverter();
+
     }
 
     protected Convert() {
@@ -227,7 +240,7 @@ public final class Convert extends JsonMapper {
      */
     public static String encodeBase64(byte[] input) throws UnsupportedEncodingException {
 
-        return new String(Base64.encodeBase64(input), Constant.DEFAULT_ENCODING);
+        return new String(Base64.encodeBase64(input), GlobalConstant.DEFAULT_ENCODING);
     }
 
     /**
@@ -715,5 +728,37 @@ public final class Convert extends JsonMapper {
             }
         }
         return tmp.toString();
-    }    
+    }
+
+
+
+    /*************************************bean mapper start***************************************/
+    public static <S, D> D map(S source, Class<D> destinationClass) {
+        return beanMapper.map(source, destinationClass);
+    }
+
+    public static <S, D> D map(S source, Type<S> sourceType, Type<D> destinationType) {
+        return beanMapper.map(source, sourceType, destinationType);
+    }
+
+    public static <S, D> List<D> mapList(Iterable<S> sourceList, Class<S> sourceClass, Class<D> destinationClass) {
+        return beanMapper.mapAsList(sourceList, TypeFactory.valueOf(sourceClass), TypeFactory.valueOf(destinationClass));
+    }
+
+    public static <S, D> List<D> mapList(Iterable<S> sourceList, Type<S> sourceType, Type<D> destinationType) {
+        return beanMapper.mapAsList(sourceList, sourceType, destinationType);
+    }
+
+    public static <S, D> D[] mapArray(final D[] destination, final S[] source, final Class<D> destinationClass) {
+        return beanMapper.mapAsArray(destination, source, destinationClass);
+    }
+
+    public static <S, D> D[] mapArray(D[] destination, S[] source, Type<S> sourceType, Type<D> destinationType) {
+        return beanMapper.mapAsArray(destination, source, sourceType, destinationType);
+    }
+
+    public static <E> Type<E> getBeanType(final Class<E> rawType) {
+        return TypeFactory.valueOf(rawType);
+    }
+    /*************************************bean mapper end***************************************/
 }
