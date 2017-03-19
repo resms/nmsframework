@@ -1,5 +1,6 @@
 package com.nms.util;
 
+import com.nms.common.GlobalWebConstant;
 import org.apache.commons.lang3.StringEscapeUtils;
 
 import java.io.UnsupportedEncodingException;
@@ -9,7 +10,7 @@ import java.net.URLEncoder;
 /**
  * Created by sam on 16-4-5.
  */
-public class WebUtil extends Constant{
+public class WebUtil extends GlobalWebConstant {
 
     /**
      * @param htmlEscaped
