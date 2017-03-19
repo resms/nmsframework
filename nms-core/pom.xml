@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
+   <parent>
+       <groupId>com.nms</groupId>
+       <artifactId>nms-parent</artifactId>
+       <version>1.1.5-SNAPSHOT</version>
+   </parent>
+   <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>com.nms</groupId>
+  <artifactId>nms-core</artifactId>
+  <packaging>jar</packaging>
+
+  <name>nms-core</name>
+  
+  <dependencies>    
+    <dependency>
+        <groupId>com.nms</groupId>
+        <artifactId>nms-util</artifactId>
+        <version>${project.parent.version}</version>
+    </dependency>
+    <!-- json end -->
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-context-support</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.springframework</groupId>
+        <artifactId>spring-orm</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.aspectj</groupId>
+        <artifactId>aspectjweaver</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>javax.inject</groupId>
+        <artifactId>javax.inject</artifactId>
+    </dependency>    
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-entitymanager</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-spatial</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-ehcache</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-hikaricp</artifactId>
+    </dependency>
+    <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+    </dependency>            
+    <dependency>
+        <groupId>org.postgresql</groupId>
+        <artifactId>postgresql</artifactId>
+    </dependency>            
+    <dependency>
+        <groupId>net.postgis</groupId>
+        <artifactId>postgis-jdbc</artifactId>
+    </dependency>            
+    <dependency>
+        <groupId>net.postgis</groupId>
+        <artifactId>postgis-jdbc-jtsparser</artifactId>                
+    </dependency>
+    <dependency>
+        <groupId>net.postgis</groupId>
+        <artifactId>postgis-jdbc-java2d</artifactId>                
+    </dependency>
+  </dependencies>
+</project>
