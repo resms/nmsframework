@@ -1,5 +1,6 @@
 package com.nms.message;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public class CMessage extends CMessageIdentity implements Serializable{
 
+    @JsonProperty(FIELD_MESSAGE_DATA)
     protected final JsonNode data;
 
     public CMessage(final CMessage msg)

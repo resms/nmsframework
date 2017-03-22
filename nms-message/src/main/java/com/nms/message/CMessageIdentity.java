@@ -1,6 +1,7 @@
 package com.nms.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.io.Serializable;
 
@@ -11,7 +12,9 @@ import java.io.Serializable;
  */
 public abstract class CMessageIdentity extends ConstantInter implements Serializable{
 
+    @JsonProperty(FIELD_MSSAGE_NAME)
     protected final String messageName;
+    @JsonProperty(FIELD_MESSAGE_VERSION)
     protected final Integer ver;
 
     public CMessageIdentity(final String messageName, final Integer ver) {

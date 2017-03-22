@@ -1,5 +1,6 @@
 package com.nms.message;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
 /**
@@ -7,6 +8,7 @@ import com.fasterxml.jackson.databind.JsonNode;
  * Created by sam on 17-3-16.
  */
 public class NMicroServiceDataMessage extends NDataMessage {
+    @JsonProperty("guid")
     protected final String guid;
 
     public NMicroServiceDataMessage(final String guid, final String id) {

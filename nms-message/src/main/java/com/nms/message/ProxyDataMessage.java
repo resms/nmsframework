@@ -1,6 +1,7 @@
 package com.nms.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.Serializable;
@@ -10,6 +11,7 @@ import java.io.Serializable;
  */
 public class ProxyDataMessage extends AdaptorDataMessage implements Serializable{
 
+    @JsonProperty(FIELD_MESSAGE_PROXY_ID)
     private final String proxyId;
 
     public ProxyDataMessage(final String proxyId,AdaptorDataMessage msg)

@@ -10,6 +10,7 @@ import java.io.Serializable;
  * Created by sam on 17-3-14.
  */
 public class NDataMessage extends NMessage implements Serializable{
+    @JsonProperty("d")
     protected final JsonNode data;
 
     public NDataMessage(final String id)

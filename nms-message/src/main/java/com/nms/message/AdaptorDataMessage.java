@@ -1,6 +1,7 @@
 package com.nms.message;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.Serializable;
@@ -9,6 +10,7 @@ import java.io.Serializable;
  * Created by sam on 16-8-4.
  */
 public class AdaptorDataMessage extends CDataMessage implements Serializable {
+    @JsonProperty(FIELD_MESSAGE_ADAPTOR_ID)
     protected final String adaptorId;
 
     public AdaptorDataMessage(final String adaptorId,CDataMessage msg)
