@@ -434,12 +434,63 @@ public final class Convert extends JsonMapper {
     }
 
     /**
+     *
+     * @param obj
+     * @return
+     */
+    public static float toFloat(Object obj)
+    {
+        return toFloat(obj,0f);
+    }
+
+    /**
+     *
+     * @param obj
+     * @param defaultValue
+     * @return
+     */
+    public static float toFloat(Object obj, float defaultValue) {
+
+        float floatValue = defaultValue;
+        if (obj != null) {
+            final String strValue = obj.toString();
+            if (StringUtils.isNotEmpty(strValue)) {
+                try {
+                    floatValue = Float.parseFloat(strValue);
+                } catch (final NumberFormatException e) {
+                    floatValue = defaultValue;
+                }
+            }
+        }
+        return floatValue;
+    }
+
+    /**
+     *
+     * @param objArray
+     * @return
+     */
+    public static float[] toFloatArray(Object[] objArray) {
+
+        if (objArray == null) {
+            objArray = new Object[0];
+        }
+        final float[] floatArray = new float[objArray.length];
+        if (!ArrayUtils.isEmpty(objArray)) {
+            for (int i = 0; i < objArray.length; i++) {
+                floatArray[i] = toFloat(objArray[i]);
+            }
+        }
+        return floatArray;
+    }
+
+    /**
      * @param obj
      * @return
      */
     public static double toDouble(Object obj) {
 
-        return toDouble(obj, 0);
+        return toDouble(obj, 0d);
     }
 
     /**
