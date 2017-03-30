@@ -42,7 +42,7 @@ public class JsonMapper
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         objectMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
-
+        objectMapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS,true);
 		AnnotationIntrospector _jaxbAI = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
 		// if ONLY using JAXB annotations:
 //		objectMapper.registerModule(new JaxbAnnotationModule());
