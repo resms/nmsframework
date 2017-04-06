@@ -1,16 +1,11 @@
 package com.nms.common;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 
 public abstract class GlobalConstant
 {
-    private static final Logger logger = LoggerFactory.getLogger(GlobalConstant.class);
+//    private static final Logger logger = LoggerFactory.getLogger(GlobalConstant.class);
 
     /**
      * default encoding.
@@ -52,4 +47,27 @@ public abstract class GlobalConstant
 	public static final String TIMESTAMP_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss:SSS";
 	public static final String DATETIME_FORMAT_STRING = "yyyy-MM-dd HH:mm:ss";
     public static final String DEFAULT_DATETIME_STRING = "1900-01-01 00:00:00";
+
+    /**
+     * auth
+     */
+    public static final String REQ_PARAM_ID = "id";
+    public static final String REQ_PARAM_CLIENT = "client";
+    public static final String REQ_PARAM_STATE = "state";
+    public static final String REQ_PARAM_DID = "did";
+    public static final String REQ_PARAM_LOGINNAME = "loginname";
+    public static final String REQ_PARAM_PASSWORD = "password";
+    public static final String REQ_PARAM_ACCESSTOKEN = "accessToken";
+    public static final String REQ_PARAM_REMOTEIP = "rip";
+
+    /**
+     * page
+     */
+    public static final String REQ_PARAM_PAGE = "page";
+    public static final String REQ_PARAM_PAGESIZE = "pageSize";
+    public static final String REQ_PARAM_QUERYSTRING = "queryStr";
+    public static final String REQ_PARAM_SORTCOLUMN = "sortColumn";
+    public static final String REQ_PARAM_ORDERBY = "order";
+
+
 }
