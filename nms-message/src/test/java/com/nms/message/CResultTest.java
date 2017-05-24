@@ -1,8 +1,10 @@
 package com.nms.message;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.nms.message.result.CResult;
 import com.nms.message.result.MessageResult;
+import com.nms.util.Convert;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -10,6 +12,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -67,5 +73,31 @@ public class CResultTest
 		String msg = result.toJson();
 		logger.info(msg);
 		assertEquals("opCode not Equals",result.fromJson(msg).getCode(),"0");
+	}
+
+	@Test
+	public void testMutiMap()
+	{
+		CResult<Map<String,Map<String,List<ObjectNode>>>> result = new CResult();
+
+		Map<String,Map<String,List<ObjectNode>>> map = new HashMap<>();
+
+		Map<String,List<ObjectNode>> rowMap = new HashMap<>();
+		List<ObjectNode> values = new ArrayList<>();
+		values.add(Convert.newObject().put("1",1));
+		values.add(Convert.newObject().put("2",2));
+
+		rowMap.put("1",values);
+
+		map.put("pbn",rowMap);
+        map.put("null",null);//key不能为null
+
+		result.success(map,"kdkdkdkdkdk");
+
+		System.out.println(result.toJson());
+
+
+        map.put(null,null);//key不能为null
+        System.out.println(result.toJson());
 	}
 }
