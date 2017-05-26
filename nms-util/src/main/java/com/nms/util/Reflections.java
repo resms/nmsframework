@@ -483,16 +483,22 @@ public final class Reflections
 	
 	public static Field getDeclaredField(Class clazz,String propertyName) throws NoSuchFieldException
 	{
-	
-		for(Class superClass = clazz;superClass != Object.class;superClass = superClass.getSuperclass())
+
+		Class superClass = clazz;
+		while (superClass != Object.class)
 		{
 			try
 			{
-				return superClass.getDeclaredField(propertyName);
+
+				Field f = superClass.getDeclaredField(propertyName);
+				if(f != null)
+					logger.debug("find field "+ propertyName +" by supperClass=" + superClass.getName());
+				return f;
 			}
 			catch(final NoSuchFieldException ex)
 			{
-				Reflections.logger.debug(ex.getMessage(),ex);
+				logger.debug("current class "+ superClass.getName() +" not found field:" + propertyName);
+				superClass = superClass.getSuperclass();
 			}
 		}
 		
