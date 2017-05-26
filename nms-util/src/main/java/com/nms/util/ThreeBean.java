@@ -2,7 +2,7 @@ package com.nms.util;
 
 import java.io.Serializable;
 
-public class ThreeBean<KEY,VALUE,OTHER> extends JsonMapper implements Serializable
+public class ThreeBean<KEY extends Serializable,VALUE extends Serializable,OTHER extends Serializable> extends JsonMapper implements Serializable
 {	
 	/**
 	 * 
