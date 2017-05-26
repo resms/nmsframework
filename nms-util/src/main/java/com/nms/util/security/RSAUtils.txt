@@ -1,0 +1,15 @@
+// Struts2 Action方法中：
+// 将公钥的 modulus 和 exponent 传给页面。
+// Hex -> apache commons-codec
+RSAPublicKey publicKey = RSAUtils.getDefaultPublicKey();
+            ActionContext.getContext().put("modulus", new String(Hex.encodeHex(publicKey.getModulus().toByteArray())));
+            ActionContext.getContext().put("exponent", new String(Hex.encodeHex(publicKey.getPublicExponent().toByteArray())));
+
+// 页面里，Javascript对明文进行加密：
+var modulus = $('#hid_modulus').val(), exponent = $('#hid_exponent').val();
+var key = RSAUtils.getKeyPair(exponent, '', modulus);
+pwd1 = RSAUtils.encryptedString(key, pwd1);
+pwd2 = RSAUtils.encryptedString(key, pwd2);
+
+// 服务器端，使用RSAUtils工具类对密文进行解密
+RSAUtils.decryptStringByJs(password1);
