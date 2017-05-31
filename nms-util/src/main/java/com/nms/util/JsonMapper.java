@@ -13,7 +13,11 @@ import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,7 +61,13 @@ public class JsonMapper
 
 		// should be default but doesn't seem to be?
 		xmlMapper.setAnnotationIntrospector(intr);
-				
+
+        objectMapper.registerModule(new AfterburnerModule());
+        objectMapper.registerModule(new ParameterNamesModule());
+        objectMapper.registerModule(new Jdk8Module());
+        objectMapper.registerModule(new JavaTimeModule());
+//        objectMapper.findAndRegisterModules();
+
 //      objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE);
 //      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 //      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -91,7 +101,6 @@ public class JsonMapper
     public static ObjectMapper newObjectMapper(JsonInclude.Include include) {
 
         final ObjectMapper mapper = new ObjectMapper();
-
         mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
         mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -110,6 +119,12 @@ public class JsonMapper
         // if using BOTH JAXB annotations AND Jackson annotations:
         AnnotationIntrospector _jacksonAI = new JacksonAnnotationIntrospector();
         mapper.setAnnotationIntrospector(new AnnotationIntrospectorPair(_jaxbAI, _jacksonAI));
+
+        mapper.registerModule(new AfterburnerModule());
+        mapper.registerModule(new ParameterNamesModule());
+        mapper.registerModule(new Jdk8Module());
+        mapper.registerModule(new JavaTimeModule());
+//        mapper.findAndRegisterModules();
 
         return mapper;
     }
