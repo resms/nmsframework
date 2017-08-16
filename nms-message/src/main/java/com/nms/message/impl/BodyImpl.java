@@ -14,6 +14,7 @@ import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
 /**
+ * 消息体基类
  * @author dxzhan
  */
 @XmlType(name = "BodyImpl",propOrder = {"data"})
