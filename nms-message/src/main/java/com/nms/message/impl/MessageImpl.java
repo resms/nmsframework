@@ -15,9 +15,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlAnnotationIntrospector;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
-import com.nms.message.Message;
-import com.nms.message.MessageException;
-import com.nms.message.OpCode;
+import com.nms.message.*;
+import com.nms.message.result.CResult;
 
 import javax.xml.bind.annotation.*;
 import java.io.IOException;
@@ -219,12 +218,22 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
         return (ObjectNode) getMapper().convertValue(this,JsonNode.class);
     }
 
-    //	public <T> T fromJson(JsonNode var0, Class<T> var1) throws JsonProcessingException {
-//        return getMapper().treeToValue(var0, var1);
-//    }
+    public <T extends MessageImpl> T fromJsonNode(JsonNode node) throws JsonProcessingException {
+        T self = (T)getMapper().treeToValue(node, this.getClass());
+        this.setHeader((THeader) self.getHeader());
+        this.setBody((TBody) self.getBody());
+        return self;
+    }
+
+    public <T> T fromJsonNode(JsonNode node, Class<T> clz) throws JsonProcessingException {
+        return getMapper().treeToValue(node, clz);
+    }
 
     public <T extends MessageImpl> T fromJson(String jsonText) throws IOException {
-        return (T) getMapper().readValue(jsonText, this.getClass());
+        T self = (T) getMapper().readValue(jsonText, this.getClass());
+        this.setHeader((THeader) self.getHeader());
+        this.setBody((TBody) self.getBody());
+        return self;
     }
 
     public <T> T fromJson(String jsonText, Class<T> claz) throws IOException {
@@ -256,7 +265,10 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
 	}
 
     public <T extends MessageImpl> T fromXml(String xmlText) throws IOException {
-        return (T)xmlMapper.readValue(xmlText,this.getClass());
+	    T self = (T)xmlMapper.readValue(xmlText,this.getClass());
+	    this.setHeader((THeader) self.getHeader());
+	    this.setBody((TBody) self.getBody());
+        return self;
     }
 
     public <T> T fromXml(String xmlText,Class<T> claz) throws IOException {
