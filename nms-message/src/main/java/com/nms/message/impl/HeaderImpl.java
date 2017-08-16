@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 
 /**
+ * 消息头基类
  * @author dxzhan
  */
 
