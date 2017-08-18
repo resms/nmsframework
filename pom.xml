@@ -9,8 +9,7 @@
     <packaging>pom</packaging>
 
     <description>NMS is a Java lib application reference architecture. </description>
-    <url>www.resms.net</url>
-    <inceptionYear>2016-2018</inceptionYear>
+    <url>https://github.com/resms/nmsframework</url>
     <organization>
         <name>www.resms.net</name>
         <url>www.resms.net</url>
