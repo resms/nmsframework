@@ -16,6 +16,13 @@
         <url>www.resms.net</url>
     </organization>
 
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        </license>
+    </licenses>
+
     <developers>
         <developer>
             <id>dxzhan</id>
@@ -29,12 +36,17 @@
         </developer>
     </developers>
 
-    <licenses>
-        <license>
-            <name>Apache License, Version 2.0</name>
-            <url>http://www.apache.org/licenses/LICENSE-2.0</url>
-        </license>
-    </licenses>
+    <scm>
+        <connection>
+            scm:git:git://github.com/resms/nmsframework
+        </connection>
+        <developerConnection>
+            scm:git:git://github.com/resms/nmsframework
+        </developerConnection>
+        <url>
+            https://github.com/resms/nmsframework
+        </url>
+    </scm>
 
     <modules>
         <module>nms-common</module>
@@ -51,7 +63,7 @@
         <environment.type>dev</environment.type>
         <jdk.version>1.8</jdk.version>
         <maven.version>3.3.9</maven.version>
-        <nexus.ip>47.90.48.69</nexus.ip>
+        <nexus.ip>resms.net</nexus.ip>
         <nexus.port>8081</nexus.port>
 
         <slf4j.version>1.7.22</slf4j.version>
@@ -344,6 +356,48 @@
                 <artifactId>jackson-module-jaxb-annotations</artifactId>
                 <version>${fasterxml-jackson-core.version}</version>
             </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-afterburner</artifactId>
+                <version>${fasterxml-jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-guava</artifactId>
+                <version>${fasterxml-jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-hibernate5</artifactId>
+                <version>${fasterxml-jackson-core.version}</version>
+            </dependency>
+            <!--jdk8 start-->
+            <dependency>
+                <groupId>com.fasterxml.jackson.module</groupId>
+                <artifactId>jackson-module-parameter-names</artifactId>
+                <version>${fasterxml-jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jdk8</artifactId>
+                <version>${fasterxml-jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr310</artifactId>
+                <version>${fasterxml-jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.fasterxml.jackson.datatype</groupId>
+                <artifactId>jackson-datatype-jsr353</artifactId>
+                <version>${fasterxml-jackson-core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish</groupId>
+                <artifactId>javax.json</artifactId>
+                <version>1.1</version>
+            </dependency>
+            <!--jdk8 end-->
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
@@ -692,6 +746,8 @@
                     <artifactId>maven-javadoc-plugin</artifactId>
                     <version>2.10.4</version>
                     <configuration>
+                        <attach>true</attach>
+                        <quiet>true</quiet>
                         <additionalparam>-Xdoclint:none</additionalparam>
                         <failOnError>false</failOnError>
                         <doctitle>${project.name} ${project.version}</doctitle>
@@ -825,13 +881,11 @@
                                 <rules>
                                     <requireMavenVersion>
                                         <version>[${maven.version},)</version>
-                                        <message>[ERROR] The currently supported version of Maven is 3.0 or higher
-                                        </message>
+                                        <message>[ERROR] The currently supported version of Maven is 3.0 or higher</message>
                                     </requireMavenVersion>
                                     <requireJavaVersion>
                                         <version>[${jdk.version},)</version>
-                                        <message>[ERROR] The currently supported version of Java is 1.7 or higher
-                                        </message>
+                                        <message>[ERROR] The currently supported version of Java is ${jdk.version} or higher</message>
                                     </requireJavaVersion>
                                     <requirePluginVersions>
                                         <banLatest>true</banLatest>
@@ -1092,6 +1146,7 @@
                     <exclude>**/*.java</exclude>
                     <exclude>**/.svn/*</exclude>
                     <exclude>**/CVS/*</exclude>
+                    <exclude>**/.git/*</exclude>
                 </excludes>
             </resource>
 
@@ -1108,6 +1163,7 @@
                 <excludes>
                     <exclude>**/.svn/*</exclude>
                     <exclude>**/CVS/*</exclude>
+                    <exclude>**/.git/*</exclude>
                 </excludes>
             </resource>
         </resources>
