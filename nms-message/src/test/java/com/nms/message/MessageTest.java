@@ -1,11 +1,12 @@
 package com.nms.message;
 
 
-import junit.framework.TestCase;
-
 import com.nms.message.result.MessageResult;
+import org.junit.Test;
 
-public class MessageTest extends TestCase
+import java.io.IOException;
+
+public class MessageTest
 {
 	
 	// public void testStringResult() throws JsonProcessingException
@@ -16,12 +17,22 @@ public class MessageTest extends TestCase
 	// System.out.println(defaultMapper.writeValueAsString(result));
 	// System.out.println(result.toJson());
 	// }
-	
+	@Test
 	public void testMessageResult()
 	{
 	
 		final MessageResult result = new MessageResult();
-//		System.out.println(result.toJson());
 		System.out.println(result.toJson());
 	}
+
+	@Test
+	public void testCompress() throws IOException {
+		final MessageResult result = new MessageResult();
+		System.out.println(result.toJson());
+		String s1 = result.toJsonCompress();
+		System.out.println(s1);
+		result.fromJsonCompress(s1);
+		System.out.println(result.toJson());
+	}
+
 }
