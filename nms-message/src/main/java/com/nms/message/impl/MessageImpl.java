@@ -16,16 +16,13 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 import com.fasterxml.jackson.dataformat.xml.jaxb.XmlJaxbAnnotationIntrospector;
 import com.fasterxml.jackson.module.jaxb.JaxbAnnotationIntrospector;
 import com.nms.message.*;
-import com.nms.message.result.CResult;
 
 import javax.xml.bind.annotation.*;
-import java.io.IOException;
-import java.io.Serializable;
+import java.io.*;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.zip.GZIPInputStream;
+import java.util.zip.GZIPOutputStream;
 
 /**
  * @author dxzhan
@@ -36,16 +33,17 @@ import java.util.Map;
 @XmlAccessorType(XmlAccessType.PROPERTY)
 public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends BodyImpl> implements Message<THeader,TBody>,Serializable
 {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+
+    protected static final String EMPTY_MSG = "{\"Header\":{},\"Body\":{}}";
 
 	protected final static ObjectMapper objectMapper = new ObjectMapper();
 
     protected final static XmlMapper xmlMapper = new XmlMapper();
 
     protected static volatile ObjectMapper mapper = null;
+
+    public static final int BUFFER = 1024;
+    public static final Charset CHARSET = Charset.forName("UTF-8");
 
 	static
 	{
@@ -141,14 +139,12 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
     @Override
     public TBody getBody()
     {
-
         return body;
     }
 
     @Override
     public void setBody(TBody body)
     {
-
         this.body = body;
     }
 
@@ -174,8 +170,7 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
 	@Override
 	public String toJson()
 	{
-
-		String result = "{\"Header\":{},\"Body\":{}}";
+		String result = EMPTY_MSG;
 
 		try {
             result = getMapper().writeValueAsString(this);
@@ -188,7 +183,7 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
 	
 	public String toJsonP()
 	{
-		String result = "{\"Header\":{},\"Body\":{}}";
+		String result = EMPTY_MSG;
 
 		try {
             result = getMapper().writeValueAsString(new JSONPObject("callback",this));
@@ -201,7 +196,7 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
 	
 	public String toJsonP(String functionName)
 	{
-		String result = "{\"Header\":{},\"Body\":{}}";
+		String result = EMPTY_MSG;
 
 		try {
             result = getMapper().writeValueAsString(new JSONPObject(functionName,this));
@@ -241,7 +236,6 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
     }
 
     public <T extends MessageImpl> T update(String jsonString) throws MessageException {
-
         try
         {
             return getMapper().readerForUpdating(this).readValue(jsonString);
@@ -275,28 +269,187 @@ public abstract class MessageImpl<THeader extends HeaderImpl, TBody extends Body
         return xmlMapper.readValue(xmlText,claz);
     }
 
-    public String toDataTable()
+    /**
+     * 将List<Pojo>类型的数据转换为二维的DataTable形式
+     * 要求Pojo是只包含基本类型的属性的实体Bean，不应包含List，Map或其他pojo等类型
+     * 首行为列头，其他行为数据行
+     * username,age,
+     * sam,33
+     * @return
+     */
+    public String toJsonDataTable()
     {
-        if(getBody().getData() instanceof ArrayList)
-        {
-            ArrayList<?> datas = ((ArrayList)getBody().getData());
-
-            ObjectNode jsonNode = newObject();
-            List<String> heads = new ArrayList<String>();
-
-            for(int i = 0; i < datas.size();i++)
-            {
-                if(heads.isEmpty())
-                {
-                    Map<String,Object> node = getMapper().convertValue(datas.get(i),Map.class);
-
-                }
-            }
-        }
-        else if(getBody().getData() instanceof LinkedList)
-        {
-
-        }
+//        List<Object> dt = new ArrayList<Object>();
+//
+//        if(getBody().getData() instanceof List)
+//        {
+//            ArrayList<?> datas = ((ArrayList)getBody().getData());
+//            Map<String,Object> headMap = getMapper().convertValue(datas.get(0),Map.class);
+//            dt.addAll(headMap.keySet());
+//
+//            for(int i = 1; i < datas.size();i++)
+//            {
+//                Map<String,Object> map = getMapper().convertValue(datas.get(i),Map.class);
+//                dt.addAll(map.values());
+//            }
+//        }
+//        MessageImpl<THeader,BodyImpl<List<Object>>> msg = new MessageImpl<THeader, BodyImpl<List<Object>>>(this.getHeader(),new BodyImpl<List<Object>>(dt));
+//        return msg.toJson();
         return null;
+    }
+
+    public String toJsonCompress() throws IOException {
+        return compress(this.toJson());
+    }
+
+    public void fromJsonCompress(final String text) throws IOException {
+        String s = decompress(text);
+        fromJson(s);
+    }
+
+    public static String compress(String text) throws IOException {
+        if (text == null || text.isEmpty())
+            return "";
+
+        final byte[] in = text.getBytes(CHARSET);
+        final byte[] out = compress(in);
+        return byte2Hex(out);
+    }
+
+    public static String decompress(final String text) throws IOException {
+        if (text == null || text.isEmpty())
+            return "";
+
+        final byte[] in = hex2Byte(text);
+        final byte[] out = decompress(in);
+        return new String(out,0,out.length,CHARSET);
+    }
+
+    /**将二进制转换成16进制
+     * @param buf
+     * @return
+     */
+    public static String byte2Hex(final byte buf[]) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < buf.length; i++) {
+            String hex = Integer.toHexString(buf[i] & 0xFF);
+            if (hex.length() == 1) {
+                hex = '0' + hex;
+            }
+            sb.append(hex.toUpperCase());
+        }
+        return sb.toString();
+    }
+
+    /**将16进制转换为二进制
+     * @param hexString
+     * @return
+     */
+    public static byte[] hex2Byte(final String hexString) {
+        if (hexString.length() < 1)
+            return null;
+        byte[] result = new byte[hexString.length()/2];
+        for (int i = 0;i< hexString.length()/2; i++) {
+            int high = Integer.parseInt(hexString.substring(i*2, i*2+1), 16);
+            int low = Integer.parseInt(hexString.substring(i*2+1, i*2+2), 16);
+            result[i] = (byte) (high * 16 + low);
+        }
+        return result;
+    }
+
+    /**
+     * data compress
+     *
+     * @param inBytes
+     * @return
+     * @throws Exception
+     */
+    public static byte[] compress(final byte[] inBytes) throws IOException {
+
+        final ByteArrayInputStream bais = new ByteArrayInputStream(inBytes);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // 压缩
+        compress(bais,baos);
+
+        final byte[] outBytes = baos.toByteArray();
+
+        baos.flush();
+        baos.close();
+
+        bais.close();
+
+        return outBytes;
+    }
+
+    /**
+     * data compress
+     *
+     * @param is
+     * @param os
+     * @throws Exception
+     */
+    public static void compress(InputStream is,OutputStream os) throws IOException {
+
+        final GZIPOutputStream gos = new GZIPOutputStream(os);
+
+        int count;
+        final byte buffer[] = new byte[BUFFER];
+        while((count = is.read(buffer,0,BUFFER)) != -1)
+        {
+            gos.write(buffer,0,count);
+        }
+
+        gos.finish();
+
+        gos.flush();
+        gos.close();
+    }
+
+    /**
+     * 数据解压缩
+     *
+     * @param inBytes
+     * @return
+     * @throws Exception
+     */
+    public static byte[] decompress(final byte[] inBytes) throws IOException {
+
+        final ByteArrayInputStream bais = new ByteArrayInputStream(inBytes);
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+        // 解压缩
+
+        decompress(bais,baos);
+
+        final byte[] outBytes = baos.toByteArray();
+
+        baos.flush();
+        baos.close();
+
+        bais.close();
+
+        return outBytes;
+    }
+
+    /**
+     * 数据解压缩
+     *
+     * @param is
+     * @param os
+     * @throws Exception
+     */
+    public static void decompress(InputStream is,OutputStream os) throws IOException {
+
+        final GZIPInputStream gis = new GZIPInputStream(is);
+
+        int count;
+        final byte data[] = new byte[BUFFER];
+        while((count = gis.read(data,0,BUFFER)) != -1)
+        {
+            os.write(data,0,count);
+        }
+
+        gis.close();
     }
 }
