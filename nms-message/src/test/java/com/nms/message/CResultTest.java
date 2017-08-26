@@ -62,6 +62,9 @@ public class CResultTest
 			xmlResult = xmlResult.fromXml(xmlText);
 			logger.info(xmlResult.toJson());
 			assertEquals("Xml to Json not equals",result,xmlResult);
+			CResult<String> jsonResult = new CResult<String>();
+			jsonResult.fromJson(jsonText);
+			logger.info(jsonResult.toJson());
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -73,6 +76,18 @@ public class CResultTest
 		String msg = result.toJson();
 		logger.info(msg);
 		assertEquals("opCode not Equals",result.fromJson(msg).getCode(),"0");
+		CResult<MessageResult> result1 = new CResult<MessageResult>();
+		result1.fromJson(msg);
+		assertEquals("fromJson object Equals",result1,result);
+
+	}
+
+	@Test
+	public void toJsonP()
+	{
+		final CResult<MessageResult> result = new CResult<MessageResult>();
+		String msg = result.toJsonP();
+		logger.info(msg);
 	}
 
 	@Test
