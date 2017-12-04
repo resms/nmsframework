@@ -25,10 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Created by sam on 15-7-15.
@@ -45,8 +42,13 @@ public class JsonMapper
         objectMapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
         objectMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+        objectMapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);//解决BigDecimal装箱成float导致截断问题
         objectMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
         objectMapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS,true);
+//      objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE);
+//      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
+//      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
+//      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 		AnnotationIntrospector _jaxbAI = new JaxbAnnotationIntrospector(TypeFactory.defaultInstance());
 		// if ONLY using JAXB annotations:
 //		objectMapper.registerModule(new JaxbAnnotationModule());
@@ -67,11 +69,6 @@ public class JsonMapper
         objectMapper.registerModule(new Jdk8Module());
         objectMapper.registerModule(new JavaTimeModule());
 //        objectMapper.findAndRegisterModules();
-
-//      objectMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE);
-//      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
-//      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
-//      objectMapper.setSerializationInclusion(JsonInclude.Include.NON_DEFAULT);
 	}
 
 	public JsonMapper()
@@ -101,10 +98,12 @@ public class JsonMapper
     public static ObjectMapper newObjectMapper(JsonInclude.Include include) {
 
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
-        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+//        mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS,false);
+//        mapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
+        mapper.enable(DeserializationFeature.USE_BIG_DECIMAL_FOR_FLOATS);//解决BigDecimal装箱成float导致截断问题
         mapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         mapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+        mapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS,true);
 //      mapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE);
 //      mapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 //      mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -137,6 +136,7 @@ public class JsonMapper
         xmlMapper.setDateFormat(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss"));
         xmlMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
         xmlMapper.configure(SerializationFeature.WRITE_ENUMS_USING_TO_STRING, true);
+        xmlMapper.configure(JsonParser.Feature.ALLOW_NON_NUMERIC_NUMBERS,true);
 //      xmlMapper.setPropertyNamingStrategy(PropertyNamingStrategy.LOWER_CASE);
 //      xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_EMPTY);
 //      xmlMapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
@@ -407,6 +407,11 @@ public class JsonMapper
             logger.error(e.getMessage());
             return null;
         }
+    }
+
+    public static <T> T fromJson(String jsonText, Class<?> collectionClz,Class<?> elementClz) throws IOException {
+        JavaType type = getObjectMapper().getTypeFactory().constructParametricType(collectionClz,elementClz);
+        return getObjectMapper().readValue(jsonText,type);
     }
 
     /**
