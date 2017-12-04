@@ -43,7 +43,7 @@ public final class Convert extends JsonMapper {
 
     private static final char[] BASE62 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
             .toCharArray();
-    
+
     private final static ConcurrentMap<Class, JAXBContext> jaxbContexts = new ConcurrentHashMap<Class, JAXBContext>();
 
     private final static ObjectMapper protobufMapper = new ObjectMapper(new ProtobufFactory());
@@ -54,7 +54,7 @@ public final class Convert extends JsonMapper {
 
     static {
 
-        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().build();
+        MapperFactory mapperFactory = new DefaultMapperFactory.Builder().useAutoMapping(true).mapNulls(true).build();
         beanMapper = mapperFactory.getMapperFacade();
 
         registerDateConverter();
