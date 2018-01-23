@@ -21,7 +21,7 @@ import java.util.List;
 @XmlRootElement(name = "ResultBody")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlSeeAlso({ArrayList.class, LinkedList.class})
-public class ResultBodyImpl<TType> extends BodyImpl<TType> implements ResultBody,Serializable
+public class ResultBodyImpl<E> extends BodyImpl<E> implements ResultBody,Serializable
 {
 	/**
 	 * 
@@ -39,21 +39,21 @@ public class ResultBodyImpl<TType> extends BodyImpl<TType> implements ResultBody
 		this.msgs = new ArrayList<String>();
 	}
 	
-	public ResultBodyImpl(TType data)
+	public ResultBodyImpl(E data)
 	{
 	
 		super(data);
 		this.msgs = new ArrayList<String>(5);
 	}
 	
-	public ResultBodyImpl(TType data, List<String> msgs)
+	public ResultBodyImpl(E data, List<String> msgs)
 	{
 	
 		super(data);
 		this.msgs = new ArrayList<String>(5);
 	}
 	
-	public ResultBodyImpl(TType data, String msg)
+	public ResultBodyImpl(E data, String msg)
 	{
 	
 		super(data);
@@ -103,13 +103,13 @@ public class ResultBodyImpl<TType> extends BodyImpl<TType> implements ResultBody
 
 	@XmlElement(name = "data",required = true)
     @Override
-	public TType getData()
+	public E getData()
 	{
 		return super.getData();
 	}
 
 	@Override
-	public void setData(TType data)
+	public void setData(E data)
 	{
 		super.setData(data);
 	}

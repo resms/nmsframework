@@ -24,7 +24,7 @@ import java.util.List;
 @XmlType(name = "CResult")
 @XmlRootElement(name = "CResult")
 @XmlAccessorType(XmlAccessType.PROPERTY)
-public final class CResult<TType> extends MessageImpl<ResultHeaderImpl,ResultBodyImpl<TType>> implements Serializable
+public final class CResult<E> extends MessageImpl<ResultHeaderImpl,ResultBodyImpl<E>> implements Serializable
 {
 	/**
 	 * 
@@ -35,15 +35,14 @@ public final class CResult<TType> extends MessageImpl<ResultHeaderImpl,ResultBod
 	public CResult()
 	{
 	
-		super(new ResultHeaderImpl(OpCode.FAILURE.toString()),new ResultBodyImpl<TType>(null));
+		super(new ResultHeaderImpl(OpCode.FAILURE.toString()),new ResultBodyImpl<E>(null));
 	}
 	
 	/**
      *
      */
-	public CResult(ResultHeaderImpl header, ResultBodyImpl<TType> body)
+	public CResult(ResultHeaderImpl header, ResultBodyImpl<E> body)
 	{
-	
 		super(header,body);
 	}
 	
@@ -51,40 +50,40 @@ public final class CResult<TType> extends MessageImpl<ResultHeaderImpl,ResultBod
 	 * @param code
 	 * @param body
 	 */
-	public CResult(String code, TType body)
+	public CResult(String code, E body)
 	{
 	
-		super(new ResultHeaderImpl(code),new ResultBodyImpl<TType>(body));
+		super(new ResultHeaderImpl(code),new ResultBodyImpl<E>(body));
 	}
 	
-	public CResult(String code, TType body, String msg)
+	public CResult(String code, E body, String msg)
 	{
 	
-		super(new ResultHeaderImpl(code),new ResultBodyImpl<TType>(body,msg));
+		super(new ResultHeaderImpl(code),new ResultBodyImpl<E>(body,msg));
 	}
 	
-	public CResult(String code, String token, TType body, String msg)
+	public CResult(String code, String token, E body, String msg)
 	{
 	
-		super(new ResultHeaderImpl(code,token),new ResultBodyImpl<TType>(body,msg));
+		super(new ResultHeaderImpl(code,token),new ResultBodyImpl<E>(body,msg));
 	}
 	
-	public CResult(String code, String token, String state, TType body, String msg)
+	public CResult(String code, String token, String state, E body, String msg)
 	{
 	
-		super(new ResultHeaderImpl(code,token,state),new ResultBodyImpl<TType>(body,msg));
+		super(new ResultHeaderImpl(code,token,state),new ResultBodyImpl<E>(body,msg));
 	}
 	
-	public CResult(String code, Integer version, String token, TType body, String msg)
+	public CResult(String code, Integer version, String token, E body, String msg)
 	{
 	
-		super(new ResultHeaderImpl(code,version,token),new ResultBodyImpl<TType>(body,msg));
+		super(new ResultHeaderImpl(code,version,token),new ResultBodyImpl<E>(body,msg));
 	}
 	
-	public CResult(String code, Integer version, String token, String state, TType body, String msg)
+	public CResult(String code, Integer version, String token, String state, E body, String msg)
 	{
 	
-		super(new ResultHeaderImpl(code,version,token,state),new ResultBodyImpl<TType>(body,msg));
+		super(new ResultHeaderImpl(code,version,token,state),new ResultBodyImpl<E>(body,msg));
 	}
 
 	@XmlElement(name = "header",required = true)
@@ -102,25 +101,25 @@ public final class CResult<TType> extends MessageImpl<ResultHeaderImpl,ResultBod
 
 	@XmlElement(name = "body",required = true)
 	@Override
-	public ResultBodyImpl<TType> getBody()
+	public ResultBodyImpl<E> getBody()
 	{
 		return super.getBody();
 	}
 
 	@Override
-	public void setBody(ResultBodyImpl<TType> body)
+	public void setBody(ResultBodyImpl<E> body)
 	{
 		super.setBody(body);
 	}
 
 	@XmlTransient
-    public void setData(TType data)
+    public void setData(E data)
     {
 
         super.getBody().setData(data);
     }
 
-    public TType getData()
+    public E getData()
     {
 
         if(null != this.getBody() && null != this.getBody().getData())
@@ -211,7 +210,17 @@ public final class CResult<TType> extends MessageImpl<ResultHeaderImpl,ResultBod
 			this.getBody().getMsgs().clear();
 		}
 	}
-	
+
+	public static <E> CResult<E> newSuccess()
+	{
+		return new CResult<E>(OpCode.SUCCESS.toString(),null);
+	}
+
+	public static <E> CResult<E> newSuccess(final String msg)
+	{
+		return new CResult<E>(OpCode.SUCCESS.toString(),null,msg);
+	}
+
 	@JsonIgnore
 	public void success()
 	{
@@ -228,12 +237,22 @@ public final class CResult<TType> extends MessageImpl<ResultHeaderImpl,ResultBod
 	}
 
     @JsonIgnore
-	public void success(TType data,String msg)
+	public void success(E data, String msg)
 	{
 	
 		this.setCode(OpCode.SUCCESS.toString());
 		this.getBody().setData(data);
 		this.setMsg(0,msg);
+	}
+
+	public static <E> CResult<E> newFailure()
+	{
+		return new CResult<E>(OpCode.FAILURE.toString(),null);
+	}
+
+	public static <E> CResult<E> newFailure(final String msg)
+	{
+		return new CResult<E>(OpCode.FAILURE.toString(),null,msg);
 	}
 
     @JsonIgnore
@@ -252,7 +271,7 @@ public final class CResult<TType> extends MessageImpl<ResultHeaderImpl,ResultBod
 	}
 
     @JsonIgnore
-	public void failure(TType data,String msg)
+	public void failure(E data, String msg)
 	{
 	
 		this.setCode(OpCode.FAILURE.toString());

@@ -21,14 +21,14 @@ import java.io.Serializable;
 @XmlRootElement(name = "Body")
 @XmlAccessorType(XmlAccessType.PROPERTY)
 @XmlSeeAlso({ResultBodyImpl.class, AuthBodyImpl.class, AuthBusBodyImpl.class,BusBodyImpl.class})
-public class BodyImpl<TType> implements Body,Serializable
+public class BodyImpl<E> implements Body,Serializable
 {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 
-    protected TType data;
+    protected E data;
 	
 	/**
      *
@@ -38,19 +38,19 @@ public class BodyImpl<TType> implements Body,Serializable
 	
 	}
 	
-	public BodyImpl(TType data)
+	public BodyImpl(E data)
 	{
 	
 		this.data = data;
 	}
 
     @XmlElement(name = "Data",required = true)
-	public TType getData()
+	public E getData()
 	{
 		return data;
 	}
 	
-	public void setData(TType data)
+	public void setData(E data)
 	{
         this.data = data;
 	}
